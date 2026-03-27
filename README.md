@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Premium Next.js Calculator
 
-## Getting Started
+A sleek, modern, glassmorphic calculator application built with **Next.js 16**, **Tailwind CSS v4**, and **Razorpay**. 
 
-First, run the development server:
+This application demonstrates a unique "Time-Based Premium Session" monetization strategy. The user gets a beautiful calculator interface, but mathematically resolving an operation requires an active session. A user can purchase a **10-minute premium session** for exactly **₹1.00** via Razorpay.
 
+## 🚀 Features
+
+- **Gorgeous UI/UX**: Dark mode, ambient glowing backgrounds, and modern Lucide icons.
+- **Component Architecture**: Fully modular design separating UI (`CalculatorDisplay`, `Keypad`, `PremiumModal`) from business logic.
+- **Custom Hooks**: Mathematical logic is isolated in `useCalculator`, while session/payment logic lives in `usePremiumSession`.
+- **Razorpay Integration**: A secure Next.js Server App Route computes and creates the order ID. The client smoothly manages the checkout process without leaving the page.
+- **Session Continuity**: 10-minute sessions survive page reloads utilizing browser `localStorage`.
+- **Live Timer**: Shows exactly how much premium time is left.
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js (App Router)
+- **Styling**: Tailwind CSS via `@tailwindcss/postcss`
+- **Icons**: `lucide-react`
+- **Payments**: `razorpay` (Server SDK) & Razorpay Checkout JS Library
+
+## ⚙️ Getting Started
+
+### 1. Configure Environment Variables
+Create a `.env.local` file at the root of the project to hold your Razorpay Test Keys:
+
+```env
+NEXT_PUBLIC_RAZORPAY_KEY_ID="rzp_test_xxxxxx"
+RAZORPAY_KEY_ID="rzp_test_xxxxxx"
+RAZORPAY_KEY_SECRET="your_razorpay_secret"
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. Start the Development Server
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+src/
+├── app/
+│   ├── api/create-order/route.ts  # Secure backend order creation
+│   ├── globals.css                # Tailwind imports
+│   ├── layout.tsx                 # Root layout
+│   └── page.tsx                   # Main controller container
+├── components/
+│   ├── CalculatorDisplay.tsx      # Timer and mathematical display
+│   ├── Keypad.tsx                 # Buttons grid logic
+│   └── PremiumModal.tsx           # Purchase overlay
+└── hooks/
+    ├── useCalculator.ts           # Math execution state
+    └── usePremiumSession.ts       # Razorpay tracking & localstorage
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔒 Security Notes
+The actual payment amount (`100` paise / ₹1) is strictly enforced and verified over server-side Node execution inside `/api/create-order`, making it tamper-proof against frontend modifications.
+# Calculator
