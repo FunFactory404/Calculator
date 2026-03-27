@@ -97,7 +97,7 @@ export function usePremiumSession() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
         amount: order.amount,
         currency: order.currency,
-        name: "Premium Session",
+        name: "calcypay",
         description: selectedPlanId === "plan_48hr" ? "48-Hour Pro Pass Calculator Access" : "10-Minute Sprint Calculator Access",
         order_id: order.id,
         handler: function (response: any) {

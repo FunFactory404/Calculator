@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Script from "next/script";
 import { useCalculator } from "@/hooks/useCalculator";
 import { usePremiumSession } from "@/hooks/usePremiumSession";
@@ -28,6 +29,36 @@ export default function Home() {
     // Unlocked!
     calc.performCalculation();
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't steal focus if modal is active
+      if (session.showPremiumModal) return;
+
+      const key = e.key;
+      
+      if (/[0-9.]/.test(key)) {
+        calc.handleNumClick(key);
+      } else if (key === "+" || key === "-") {
+        calc.handleOpClick(key);
+      } else if (key === "*" || key === "x" || key === "X") {
+        calc.handleOpClick("×");
+      } else if (key === "/") {
+        e.preventDefault(); // Prevent Firefox "Quick Find" slash
+        calc.handleOpClick("÷");
+      } else if (key === "Enter" || key === "=") {
+        e.preventDefault(); 
+        handleEquals();
+      } else if (key === "Escape") {
+        calc.handleClear();
+      } else if (key === "Backspace" || key === "Delete") {
+        calc.handleBackspace();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [calc.display, calc.previousVal, calc.operator, session.showPremiumModal, session.isSessionActive]);
 
   const handleInitiatePayment = () => {
     session.initiatePayment(() => {
