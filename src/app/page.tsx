@@ -69,6 +69,8 @@ export default function Home() {
             onClose={() => session.setShowPremiumModal(false)}
             onInitiatePayment={handleInitiatePayment}
             isProcessingPayment={session.isProcessingPayment}
+            selectedPlanId={session.selectedPlanId as any}
+            setSelectedPlanId={session.setSelectedPlanId as any}
         />
 
       </div>

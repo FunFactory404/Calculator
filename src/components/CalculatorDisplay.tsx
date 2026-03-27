@@ -42,7 +42,7 @@ export function CalculatorDisplay({ sessionExpiry, timeLeft, previousVal, operat
                 {previousVal && operator ? `${previousVal} ${operator}` : ""}
              </div>
              
-             <span className="text-5xl font-light text-white text-right tracking-tighter truncate max-w-full transition-all">
+             <span className="text-5xl font-mono font-light text-white text-right tracking-tighter truncate max-w-full transition-all">
                   {display || "0"}
              </span>
         </div>

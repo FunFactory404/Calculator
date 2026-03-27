@@ -2,13 +2,19 @@
 
 import { useState, useEffect } from "react";
 
-const SESSION_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+const PLAN_DURATIONS: Record<string, number> = {
+  plan_10min: 10 * 60 * 1000,
+  plan_48hr: 48 * 60 * 60 * 1000,
+};
 
 export function usePremiumSession() {
   const [sessionExpiry, setSessionExpiry] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  
+  // Track the currently selected plan
+  const [selectedPlanId, setSelectedPlanId] = useState<"plan_10min" | "plan_48hr">("plan_10min");
 
   // Initial Check on Mount
   useEffect(() => {
@@ -51,6 +57,16 @@ export function usePremiumSession() {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
+    
+    // For 48 hours, it's better to format as HH:MM:SS if over an hour, but MM:SS is a placeholder. 
+    // Let's elegantly handle hours if needed:
+    const hours = Math.floor(minutes / 60);
+    const minsLeft = minutes % 60;
+    
+    if (hours > 0) {
+        return `${hours.toString().padStart(2, '0')}:${minsLeft.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
@@ -71,8 +87,7 @@ export function usePremiumSession() {
       const res = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // We revert back to passing 1 here
-        body: JSON.stringify({ amount: 1 }), 
+        body: JSON.stringify({ planId: selectedPlanId }), 
       });
 
       if (!res.ok) throw new Error("Network response was not ok");
@@ -83,13 +98,15 @@ export function usePremiumSession() {
         amount: order.amount,
         currency: order.currency,
         name: "Premium Session",
-        description: "10-Minute Unlimited Calculator Access",
+        description: selectedPlanId === "plan_48hr" ? "48-Hour Pro Pass Calculator Access" : "10-Minute Sprint Calculator Access",
         order_id: order.id,
         handler: function (response: any) {
              console.log("Payment successful", response);
              
-             // Activate Session
-             const newExpiry = Date.now() + SESSION_DURATION_MS;
+             // Activate Session dynamically based on selected plan
+             const duration = PLAN_DURATIONS[selectedPlanId] || PLAN_DURATIONS["plan_10min"];
+             const newExpiry = Date.now() + duration;
+             
              setSessionExpiry(newExpiry);
              localStorage.setItem("calc_session_expiry", newExpiry.toString());
              
@@ -134,5 +151,7 @@ export function usePremiumSession() {
     setShowPremiumModal,
     isSessionActive,
     initiatePayment,
+    selectedPlanId,
+    setSelectedPlanId
   };
 }
