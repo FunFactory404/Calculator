@@ -43,7 +43,7 @@ export function useCalculator() {
     
     // Easter Egg: 2 + 2 = 5
     if (prev === 2 && curr === 2 && operator === "+") {
-        return "5";
+        return "10";
     }
 
     let result = 0;
