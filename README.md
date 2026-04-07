@@ -66,3 +66,4 @@ src/
 ## 🔒 Security Notes
 The actual payment amount (`100` paise / ₹1) is strictly enforced and verified over server-side Node execution inside `/api/create-order`, making it tamper-proof against frontend modifications.
 # Calculator
+# Calculator
